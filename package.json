@@ -1,0 +1,48 @@
+{
+  "version": "1.0.69",
+  "description": "my apitable widget chart",
+  "engines": {
+    "node": ">=8.x"
+  },
+  "keywords": [
+    "apitable",
+    "widget",
+    "chart",
+    "widgets",
+    "apitable widgets"
+  ],
+  "main": "./dist/index",
+  "module": "./dist/index",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "start": "widget-cli start",
+    "release": "widget-cli release"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
+  },
+  "dependencies": {
+    "@antv/g2plot": "^2.3.39",
+    "@rjsf/core": "^2.4.0",
+    "@types/react": "^16.9.43",
+    "@types/react-dom": "^16.9.8",
+    "@apitable/components": "latest",
+    "@apitable/core": "latest",
+    "@apitable/icons": "latest",
+    "@apitable/widget-sdk": "latest",
+    "dayjs": "^1.10.4",
+    "echarts": "^5.3.1",
+    "lodash": "^4.17.20",
+    "react-custom-scrollbars": "^4.2.1",
+    "styled-components": ">=5.2.1",
+    "typescript": "4.1.2"
+  },
+  "authorName": "APITable",
+  "authorLink": "https://developers.apitable.com",
+  "authorEmail": "developer@apitable.com"
+}
