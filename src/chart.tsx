@@ -26,9 +26,9 @@ CHART_TYPES.forEach(item => ChartMap[item.id] = item);
 const useGetDefaultFormData = (meta) => {
   // useActiveViewId There exists a new get under the dashboard that is empty, so you need to get the first of all tables.
   const defaultViewId = useViewIds()[0];
-  const viewId = useActiveViewId();
-  const fields = useFields(viewId || defaultViewId);
-
+  const activeViewId = useActiveViewId();
+  const viewId = activeViewId || defaultViewId
+  const fields = useFields(viewId);
   // Default form configuration.
   return useCallback(() => {
     // Classification dimensions (attachments are not allowed as classification dimensions).
@@ -49,7 +49,7 @@ const useGetDefaultFormData = (meta) => {
     };
     // Since it is only used for the first time, there is no need to update.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [viewId]);
 };
 
 /**
