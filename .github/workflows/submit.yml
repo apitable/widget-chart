@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
     inputs:
       allow_error:
-        description: 'prevents a workflow run from failing when a job fails'
+        description: 'allow a workflow run from failing when a job fails'
         required: false
         default: false
         type: boolean
