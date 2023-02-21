@@ -7,12 +7,17 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches:
-      - develop
       - main
     paths:
       - 'package.json'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      allow_error:
+        description: 'prevents a workflow run from failing when a job fails'
+        required: false
+        default: false
+        type: boolean
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,21 +48,16 @@ jobs:
         path: ./package.json
         property: version
 
-    - name: Extract branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      id: extract_branch
-
     # develop submit
     - name: Submit Widget develop
-      if: ${{ steps.extract_branch.outputs.branch == 'develop' }}
+      continue-on-error: ${{ inputs.allow_error }}
       run: |
         echo "Submit Widget develop"
         npx -y @apitable/widget-cli submit --version ${{steps.version.outputs.value}} --host ${{ secrets.DEVELOP_HOST }} --token ${{ secrets.DEVELOP_TOKEN }}
 
     # production submit
     - name: Submit Widget production
-      if: ${{ steps.extract_branch.outputs.branch == 'main' }}
+      continue-on-error: ${{ inputs.allow_error }}
       run: |
         echo "Submit Widget production"
         npx -y @apitable/widget-cli submit --version ${{steps.version.outputs.value}} --host ${{ secrets.PRODUCTION_HOST }} --token ${{ secrets.PRODUCTION_TOKEN }}
