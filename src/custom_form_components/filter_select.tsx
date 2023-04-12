@@ -2,6 +2,7 @@ import { LinkButton, useThemeColors, Modal, Button } from "@apitable/components"
 import { AddOutlined, FilterOutlined } from "@apitable/icons"
 import { Filter } from "@apitable/widget-sdk"
 import { Strings, t } from '../i18n';
+import styled from 'styled-components';
 
 import React, { useEffect, useState } from "react"
 
@@ -9,6 +10,24 @@ interface IFilterSelect {
   value: any;
   onChange?: (filter: any) => void;
 }
+
+export const AddFilterButton = styled(LinkButton)`
+  :hover {
+    color: var(--textBrandHover);
+
+    svg {
+      fill: var(--textBrandHover);
+    }
+  }
+
+  :active {
+    color: var(--textBrandActive);
+
+    svg {
+      fill: var(--textBrandActive);
+    }
+  }
+`;
 
 export const FilterSelect = ({ value, onChange }: IFilterSelect) => {
   const colors = useThemeColors();
@@ -26,20 +45,26 @@ export const FilterSelect = ({ value, onChange }: IFilterSelect) => {
       {
         filterLen ?
           <Button
+            size={'small'}
             variant="jelly"
             color="primary"
             prefixIcon={<FilterOutlined />}
             onClick={() => setShowModal(true)}
-          >{filterLen}{t(Strings.filters_amount)}</Button> :
-          <LinkButton
+            style={{ fontSize: 13 }}
+          >
+            {filterLen}{t(Strings.filters_amount)}
+          </Button> :
+          <AddFilterButton
             href="javascript:void(0)"
             color={colors.textCommonPrimary}
             underline={false}
-            prefixIcon={<AddOutlined size={16} />}
+            prefixIcon={<AddOutlined color={colors.textCommonPrimary} size={12} />}
             onClick={() => setShowModal(true)}
           >
-            {t(Strings.add_filter)}
-          </LinkButton>
+            <span style={{ fontSize: 12 }}>
+              {t(Strings.add_filter)}
+            </span>
+          </AddFilterButton>
       }
       <FilterModal
         visible={showModal}
@@ -70,8 +95,10 @@ const FilterModal = ({ value, visible, onCancel, onConfirm }) => {
       onOk={() => onConfirm(filter)}
       cancelText={t(Strings.cancel)}
       okText={t(Strings.confirm)}
+      width={800}
+      centered
     >
-      <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+      <div style={{ maxHeight: 440, overflowY: 'auto' }}>
         <Filter filter={filter} onChange={v => setFilter(v)}/>
       </div>
     </Modal>
