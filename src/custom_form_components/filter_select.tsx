@@ -1,10 +1,10 @@
 import { LinkButton, useThemeColors, Modal, Button } from "@apitable/components"
 import { AddOutlined, FilterOutlined } from "@apitable/icons"
 import { Filter } from "@apitable/widget-sdk"
-import { Strings, t } from '../i18n';
 import styled from 'styled-components';
+import { Strings, t } from '../i18n';
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 interface IFilterSelect {
   value: any;
@@ -14,7 +14,6 @@ interface IFilterSelect {
 export const AddFilterButton = styled(LinkButton)`
   :hover {
     color: var(--textBrandHover);
-
     svg {
       fill: var(--textBrandHover);
     }
@@ -22,12 +21,55 @@ export const AddFilterButton = styled(LinkButton)`
 
   :active {
     color: var(--textBrandActive);
-
     svg {
       fill: var(--textBrandActive);
     }
   }
 `;
+
+const FilterModal = ({ value, visible, onCancel, onConfirm }) => {
+  const [filter, setFilter] = useState(value);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (visible) {
+      setFilter(value);
+    } else {
+      setFilter(null);
+    }
+  }, [visible, value]);
+
+  const onChange = (value) => {
+    const curLength = value ? (Object.values(value)[0] as [])?.length : 0;
+    const prevLength = filter ? (Object.values(filter)[0] as [])?.length : 0;
+    const isAddFilter = curLength > prevLength;
+    setFilter(value);
+    isAddFilter && setTimeout(() => {
+      if (!listRef.current) return;
+      listRef.current.scroll({ top: listRef.current.scrollHeight, behavior: 'smooth' });
+    });
+  };
+
+  return (
+    <Modal
+      title={t(Strings.filter_modal_title)}
+      visible={visible}
+      onCancel={onCancel}
+      onOk={() => onConfirm(filter)}
+      cancelText={t(Strings.cancel)}
+      okText={t(Strings.confirm)}
+      width={800}
+      centered
+    >
+      <div ref={listRef} style={{ maxHeight: 440, overflowY: 'auto' }}>
+        <Filter 
+          filter={filter} 
+          onChange={onChange}
+        />
+      </div>
+    </Modal>
+  )
+};
 
 export const FilterSelect = ({ value, onChange }: IFilterSelect) => {
   const colors = useThemeColors();
@@ -74,33 +116,4 @@ export const FilterSelect = ({ value, onChange }: IFilterSelect) => {
       />
     </div>
   )
-}
-
-const FilterModal = ({ value, visible, onCancel, onConfirm }) => {
-  const [filter, setFilter] = useState(value);
-
-  useEffect(() => {
-    if (visible) {
-      setFilter(value);
-    } else {
-      setFilter(null);
-    }
-  }, [visible, value])
-
-  return (
-    <Modal
-      title={t(Strings.filter_modal_title)}
-      visible={visible}
-      onCancel={onCancel}
-      onOk={() => onConfirm(filter)}
-      cancelText={t(Strings.cancel)}
-      okText={t(Strings.confirm)}
-      width={800}
-      centered
-    >
-      <div style={{ maxHeight: 440, overflowY: 'auto' }}>
-        <Filter filter={filter} onChange={v => setFilter(v)}/>
-      </div>
-    </Modal>
-  )
-}
+};
