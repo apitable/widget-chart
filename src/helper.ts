@@ -579,6 +579,10 @@ export const getSortFuncByField = (key: string, field?: Field, isAxis = true) =>
       case FieldType.MagicLookUp:
         const referenceField = property.entityField.field;
         return (item) => getReferenceSeriesValue([item[key]], referenceField);
+      case FieldType.Rating:
+        return (item) => {
+          return Number(item[key]);
+        };
       default:
         return (item) => {
           const value = item[key];
@@ -607,6 +611,10 @@ export const getSortFuncByField = (key: string, field?: Field, isAxis = true) =>
       return (item) => item[key];
     case FieldType.AutoNumber:
       return (item) => Number(item[key]);
+    case FieldType.Rating:
+      return (item) => {
+        return Number(item[key]);
+      };
     case FieldType.MagicLookUp:
       const referenceField = property.entityField.field;
       return getSortFuncByField(key, referenceField);
