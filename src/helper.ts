@@ -155,6 +155,8 @@ export const formatDatetime = (cv: number | number[], format: string) => {
  * @returns 
  */
 export const getNumberBaseFieldPrecision = (field?: Field) => {
+
+
   let precision = 2;
   if (!field) return precision;
   // When there is precision in the property of the entity field itself.
@@ -196,7 +198,9 @@ export const getAggregationValue = (dataList: number[], type: string, precision 
   if (res != null) {
     // console.warn('Non-numeric field summary error');
     return isNumber(res) ? parseFloat(res.toFixed(precision)) : 0;
+    return isNumber(res) ? res.toFixed(precision) : 0;
   }
+
   return res;
 };
 
