@@ -312,11 +312,10 @@ export const formatterValue = (field, value, notFormatter = true): string | numb
   const isDate = validType(FieldType.DateTime);
   const isFomula = validType(FieldType.Formula);
   const isNumber = validType(FieldType.Number) || property.valueType === FieldType.Number;
-  if (isCurrency) {
-    return `${fieldSymbol} ${value.toFixed(property.precision)}`;
-  }
-
   const precision = property?.precision ?? property?.format?.format?.precision ?? 1;
+  if (isCurrency) {
+    return `${fieldSymbol} ${value.toFixed(precision)}`;
+  }
 
   // Percentages, numbers with units.
   if (isPercent || isNumber) {
