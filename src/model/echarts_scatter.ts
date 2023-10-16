@@ -32,6 +32,11 @@ export class EchartsScatter extends EchartsBase {
       title: t(Strings.design_chart_style),
       type: 'object',
       properties: {
+        excludeZeroPoint: {
+          title: t(Strings.exclude_zero_point),
+          type: 'boolean',
+          description: t(Strings.exclude_zero_point_describle),
+        },
         ...this.getCommonFormConfigJson(),
         axisSortType: {
           title: t(Strings.chart_sort),

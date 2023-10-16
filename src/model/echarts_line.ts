@@ -23,6 +23,11 @@ export class EchartsLine extends EchartsBase {
           type: 'boolean',
           description: t(Strings.show_smooth_line),
         },
+        excludeZeroPoint: {
+          title: t(Strings.exclude_zero_point),
+          type: 'boolean',
+          description: t(Strings.exclude_zero_point_describle),
+        },
         ...this.getCommonFormConfigJson(),
         axisSortType: {
           title: t(Strings.chart_sort),
