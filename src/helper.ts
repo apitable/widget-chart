@@ -902,3 +902,13 @@ export const sortSeries = (props: {
     max: 0,
   };
 };
+
+/**
+ * Retrieves the colors of options for a given field.
+ * @param {Field | undefined} field - The field object.
+ * @returns {Map<string, string>} - A map containing the names of options as keys and their respective color values as values.
+ */
+export const getOptionColors = (field: Field | undefined) => {
+  if (field?.entityType !== 'SingleSelect') return new Map();
+  return new Map(field.property.options.map(x => [x.name, x.color.value]));
+};

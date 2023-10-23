@@ -290,6 +290,11 @@ export abstract class EchartsBase {
         type: 'boolean',
         description: t(Strings.exclude_zero_point_describle),
       },
+      useOptionColors: {
+        title: t(Strings.use_option_colors),
+        type: 'boolean',
+        description: t(Strings.use_option_colors_describle),
+      },
       theme: {
         title: t(Strings.select_theme_color),
         type: 'string',

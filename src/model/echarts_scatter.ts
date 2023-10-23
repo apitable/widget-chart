@@ -28,11 +28,13 @@ export class EchartsScatter extends EchartsBase {
 
   getChartStyleFormJSON(fields: Field[]) {
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
+    const commonFormConfigJson = this.getCommonFormConfigJson();
+    delete commonFormConfigJson.useOptionColors;
     return {
       title: t(Strings.design_chart_style),
       type: 'object',
       properties: {
-        ...this.getCommonFormConfigJson(),
+        ...commonFormConfigJson,
         axisSortType: {
           title: t(Strings.chart_sort),
           type: 'object',

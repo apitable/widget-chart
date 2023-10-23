@@ -1,7 +1,7 @@
 import { LineSeriesOption } from 'echarts';
 import { ChartType, StackType } from "./interface";
 import { Strings, t } from '../i18n';
-import { formatterValue, maxRenderNum, processChartData, processRecords, sortSeries } from '../helper';
+import { formatterValue, getOptionColors, maxRenderNum, processChartData, processRecords, sortSeries } from '../helper';
 import { EchartsBase } from './echarts_base';
 import { Field } from '@apitable/widget-sdk';
 
@@ -103,7 +103,7 @@ export class EchartsLine extends EchartsBase {
     const { seriesField, dimension, metrics, metricsType, isSplitMultipleValue,
       isFormatDatetime: _isFormatDatetime, datetimeFormatter } = chartStructure;
     
-    const { axisSortType, isCountNullValue, excludeZeroPoint } = chartStyle;
+    const { axisSortType, isCountNullValue, excludeZeroPoint, useOptionColors } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
     // Statistical dimension attribute, statistical value attribute, statistical value name.
     const dimensionField = fields.find(field => field.id === dimension) as Field;
@@ -153,15 +153,18 @@ export class EchartsLine extends EchartsBase {
       metricsField,
       isColumn: true,
     });
+    const colorMap = getOptionColors(seriesFieldInstance);
 
     const series: LineSeriesOption[] = [];
     if (axisSortType && seriesFieldInstance) {
       for (let i = 0; i < sortedSeries.length; i++) {
         const item = sortedSeries[i];
+        const itemStyle = { color: colorMap.get(item.sortKey) || '#000000' };
         series.push({
           ...styleOption.series,
           name: item.sortKey,
           data: item.series.slice(0, maxRenderNum),
+          ...(useOptionColors ? { itemStyle } : {}),
         });
       }
     } else {

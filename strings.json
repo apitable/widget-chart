@@ -236,6 +236,14 @@
             "zh_CN": "脱离零值比例",
             "en_US": "Exclude zero point"
         },
+        "use_option_colors": {
+            "zh_CN": "使用选项颜色",
+            "en_US": "Use option colors"
+        },
+        "use_option_colors_describle": {
+            "zh_CN": "使用选项颜色",
+            "en_US": "Use option colors"
+        },
         "show_smooth_line": {
             "zh_CN": "开启平滑曲线",
             "en_US": "Show smooth line"

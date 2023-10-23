@@ -1,7 +1,7 @@
 import { Field, Record } from '@apitable/widget-sdk';
 import { ChartType, StackType } from "./interface";
 import { Strings, t } from "../i18n";
-import { formatterValue, maxRenderNum, processChartData, processRecords, sortSeries } from '../helper';
+import { formatterValue, getOptionColors, maxRenderNum, processChartData, processRecords, sortSeries } from '../helper';
 import { BarSeriesOption } from 'echarts';
 import { EchartsBase } from './echarts_base';
 
@@ -146,7 +146,7 @@ export class EchartsColumn extends EchartsBase {
     
     const isColumn = this.type === ChartType.EchartsColumn;
     const isPercent = this.stackType === StackType.Percent
-    const { axisSortType, isCountNullValue, excludeZeroPoint } = chartStyle;
+    const { axisSortType, isCountNullValue, excludeZeroPoint, useOptionColors } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
     const yKey = dimensionMetricsMap.metrics.key;
     // Statistical dimension attribute, statistical value attribute, statistical value name.
@@ -199,6 +199,7 @@ export class EchartsColumn extends EchartsBase {
       chartStyle,
       { noFormatMetric, metricsField, axisLength: axisNames.length }
     );
+    const colorMap = getOptionColors(seriesFieldInstance);
 
     const series: BarSeriesOption[] = [];
     if (axisSortType && seriesFieldInstance) {
@@ -216,11 +217,13 @@ export class EchartsColumn extends EchartsBase {
             [axisKey]: sereisItem[dataIndex],
             barWidth,
           } : {};
+          const itemStyle = { color: colorMap.get(item.sortKey) || '#000000' };
           series.push({
             ...styleOption.series,
             name: item.sortKey,
             data: [sereisItem],
             ...extraField,
+            ...(useOptionColors ? { itemStyle } : {}),
           });
         }
       }
