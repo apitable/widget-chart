@@ -3,7 +3,7 @@ import { EchartsBase } from './echarts_base';
 import { ChartType, StackType } from './interface';
 import { Strings, t } from '../i18n';
 import { sortBy } from '../sortBy';
-import { getNumberBaseFieldPrecision, maxRenderNum, processChartData, processRecords } from '../helper';
+import { getNumberBaseFieldPrecision, getOptionColors, maxRenderNum, processChartData, processRecords } from '../helper';
 
 export class EchartsPie extends EchartsBase {
   type = ChartType.EchartsPie;
@@ -56,11 +56,13 @@ export class EchartsPie extends EchartsBase {
   }
 
   getChartStyleFormJSON() {
+    const commonFormConfigJson = this.getCommonFormConfigJson();
+    delete commonFormConfigJson.excludeZeroPoint;
     return {
       title: t(Strings.design_chart_style),
       type: 'object',
       properties: {
-        ...this.getCommonFormConfigJson(),
+        ...commonFormConfigJson,
       },
     };
   }
@@ -156,7 +158,7 @@ export class EchartsPie extends EchartsBase {
     // Statistic field id, type of statistic specified field (sum, average),
     // type of statistic value, whether to cut multi-selected values, date formatting.
     const { dimension, metrics, metricsType, isSplitMultipleValue, isFormatDatetime: _isFormatDatetime, datetimeFormatter } = chartStructure;
-    const { isCountNullValue } = chartStyle;
+    const { isCountNullValue, useOptionColors } = chartStyle;
     const dimensionMetricsMap = this.getFormDimensionMetricsMap();
     // Statistical dimensional attributes, statistical numerical attributes.
     const dimensionField = fields.find(field => field.id === dimension);
@@ -194,17 +196,23 @@ export class EchartsPie extends EchartsBase {
     data = data.slice(0, maxRenderNum);
 
     const styleOption = this.getChartStyleOptions(chartStructure, chartStyle, { metricsType, data, metricsField });
+    const dataWithColors = (() => {
+      if (!useOptionColors) return data;
+      const colorMap = getOptionColors(dimensionField);
+      if (!colorMap.size) return data;
+      return data.map(item => ({ ...item, itemStyle: { color: colorMap.get(item.name) || '#000000' }}));
+    })();
     const options = {
       ...styleOption.commonOption,
-      series: [{ ...styleOption.series, data }],
+      series: [{ ...styleOption.series, data: dataWithColors }],
     };
 
     if (this.stackType === StackType.Stack) {
       return {
         ...options,
         series: [
-          {  ...styleOption.series, data},
-          { ...styleOption.stackSeries, data }
+          {  ...styleOption.series, data: dataWithColors},
+          { ...styleOption.stackSeries, data: dataWithColors }
         ]
       };
     }

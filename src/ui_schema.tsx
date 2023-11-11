@@ -112,6 +112,11 @@ export const getUiSchema = (viewId: string) => {
           showTitle: false,
         },
       },
+      useOptionColors: {
+        'ui:options': {
+          showTitle: false,
+        },
+      },
       theme: {
         'ui:widget': (props) => {
           return <ThemeSelect value={props.value} onChange={props.onChange} />;
