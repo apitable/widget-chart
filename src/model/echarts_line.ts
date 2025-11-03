@@ -156,7 +156,7 @@ export class EchartsLine extends EchartsBase {
     });
 
     const series: LineSeriesOption[] = [];
-    if (axisSortType && seriesFieldInstance) {
+    if (seriesFieldInstance) {
       for (let i = 0; i < sortedSeries.length; i++) {
         const item = sortedSeries[i];
         series.push({

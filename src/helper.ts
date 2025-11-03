@@ -738,6 +738,10 @@ export const sortSeries = (props: {
   const legendNames = new Set<string>();
   let newData = [...data];
 
+  // When seriesField exists, we need to group by dimension even without explicit sorting
+  const needGrouping = seriesField != null;
+  const commonSortFunc = getSortFuncByField(mainAxisName, dimensionField);
+
   if (axisSortType) {
     const { axis, sortType } = axisSortType;
     const axisItem = Object.entries(dimensionMetricsMap).find(item => item[1].key === axis)!;
@@ -747,7 +751,6 @@ export const sortSeries = (props: {
     const isDESC = sortType === 'DESC';
 
     // x-axis sorting
-    const commonSortFunc = getSortFuncByField(mainAxisName, dimensionField);
     if (sortByXaxis) {
       newData = sortBy(newData, [commonSortFunc], false);
     } else {
@@ -773,31 +776,35 @@ export const sortSeries = (props: {
     if (isDESC) {
       newData.reverse();
     }
+  } else if (needGrouping) {
+    // No explicit sorting, but we need to group by dimension for series processing
+    newData = sortBy(newData, [commonSortFunc], false);
+  }
 
-    // Percentage processing
-    if (isPercent) {
-      const sums: number[] = [];
-      // Summation
-      for (let i = 0; i < newData.length; i++) {
-        const sortList = newData[i];
-        for (let j = 0; j < sortList.length; j++) {
-          if (sums[i] == null) {
-            sums[i] = 0;
-          }
-          sums[i] += sortList[j][yKey];
+  // Percentage processing
+  if (isPercent) {
+    const sums: number[] = [];
+    // Summation
+    for (let i = 0; i < newData.length; i++) {
+      const sortList = newData[i];
+      for (let j = 0; j < sortList.length; j++) {
+        if (sums[i] == null) {
+          sums[i] = 0;
         }
-      }
-      // Percentage processing
-      for (let i = 0; i < newData.length; i++) {
-        const sortList = newData[i];
-        for (let j = 0; j < sortList.length; j++) {
-          const val = sortList[j][yKey];
-          sortList[j][yKey] = safeParseNumberOrText(val / sums[i] * 100, 2);
-        }
+        sums[i] += sortList[j][yKey];
       }
     }
+    // Percentage processing
+    for (let i = 0; i < newData.length; i++) {
+      const sortList = newData[i];
+      for (let j = 0; j < sortList.length; j++) {
+        const val = sortList[j][yKey];
+        sortList[j][yKey] = safeParseNumberOrText(val / sums[i] * 100, 2);
+      }
+    }
+  }
 
-    if (seriesField) {
+  if (seriesField) {
       // Direct reading of seriesField properties is problematic,
       // performance is too low, each chained call to a seriesField property takes between 20 - 40 milliseconds.
       let paramField = seriesField;
@@ -891,7 +898,6 @@ export const sortSeries = (props: {
         sortedSeries: result.slice(0, maxRenderNum),
         max,
       };
-    }
   }
 
   newData = newData.flat();

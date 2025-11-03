@@ -201,7 +201,7 @@ export class EchartsColumn extends EchartsBase {
     );
 
     const series: BarSeriesOption[] = [];
-    if (axisSortType && seriesFieldInstance) {
+    if (seriesFieldInstance) {
       const dataIndex = isColumn ? 0 : 1;
       const axisKey = isColumn ? 'xAxisIndex' : 'yAxisIndex';
       const isNormal = this.stackType === StackType.None;
